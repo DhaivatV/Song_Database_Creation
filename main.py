@@ -1,6 +1,6 @@
 from selenium import webdriver
 from bs4 import BeautifulSoup
-import csv
+import pandas as pd
 import time
 
     
@@ -15,7 +15,7 @@ class Scrape:
 		self.url_home = "https://lyricsmint.com/"
 
 	def getSongList(self, artist):
-		print(self.url_home+artist+".html")
+		# print(self.url_home+artist+".html")
 		self.driver.get(self.url_home+artist+".html")
 		soup = BeautifulSoup(self.driver.page_source, 'html.parser')
 		listItem = soup.find_all('div')
@@ -32,25 +32,37 @@ class Scrape:
 		self.driver.quit()
 
 
-def get_song_details(song_name):
+def get_song_details(song_name, singer):
 	
     chromeOptions = webdriver.ChromeOptions()
     driver = webdriver.Chrome(chrome_options=chromeOptions)
     url_home = "https://lyricsmint.com/"
-    print(url_home+song_name+".html")
+    # print(url_home+song_name+".html")
     driver.get(url_home+song_name+".html")
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     listItem = soup.find_all('p')
-    # print(listItem)
-    # p_elements = [div.find('p') for div in listItem if div.find('p')]
-    # print(p_elements)
     p_text = [p.text for p in listItem if 'ADVERTISEMENT' not in p.text]
-    print(p_text[:6])
-    
+    # print(p_text[:6])
     driver.quit()
+
+    details =  {
+    'name' : song_name,
+    'artist' : singer,
+    'lyrics' : (" ").join(p_text[:6])
+    }
+
+    return details
+
+if __name__ == "__main__":
 	
+    data = []
+    artist_name = "arijit-singh"
+    song_list = Scrape().getSongList(artist_name)
+    print(song_list)
 
-song_list = Scrape().getSongList("arijit-singh")
-
-for items in song_list:
-	get_song_details(items)
+    for items in song_list[2:3]:
+        res = get_song_details(items, artist_name)
+        data.append(res)
+    
+    df = pd.DataFrame(data)
+    df.to_csv("songs_database.csv")
