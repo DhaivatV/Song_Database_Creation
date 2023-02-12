@@ -56,13 +56,14 @@ def get_song_details(song_name, singer):
 if __name__ == "__main__":
 	
     data = []
-    artist_name = "arijit-singh"
+    artist_name = "sonu-nigam"
     song_list = Scrape().getSongList(artist_name)
     print(song_list)
 
-    for items in song_list[2:3]:
+    for items in song_list[:3]:
         res = get_song_details(items, artist_name)
         data.append(res)
+        print(res)
     
     df = pd.DataFrame(data)
     df.to_csv("songs_database.csv")
