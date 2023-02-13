@@ -12,7 +12,7 @@ model = pickle.load(open('mood_classification.pkl', 'rb'))
 def hello():
     return "Hey Stranger"
 
-@app.route('/get-lyrics', methods = ['POST'])
+@app.route('/get-lyrics-hindi', methods = ['POST'])
 def get_lyrics():
     data = request.get_json()
     lyric_pred= data["lyrics"]
